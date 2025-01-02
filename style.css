@@ -1,0 +1,28 @@
+body{
+    margin: 0;
+}
+#head{
+    height: 100px;
+    width: 100vw;
+    background-color: antiquewhite;
+    display: flex;
+}
+#logo{
+    height: 100px;
+    border-radius: 100%;
+}
+#header{
+    font-family: "Rubik Vinyl", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 50px;
+}
+#content{
+    display: grid;
+    grid-template-columns: 3fr 9fr;
+    height: calc(100vh - 100px);
+    width: 100vw;
+}
+#sidebar{
+    background-color:floralwhite;
+}
