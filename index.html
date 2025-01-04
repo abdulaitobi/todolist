@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Vinyl&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/ce954a986c.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="head">
@@ -17,11 +19,42 @@
     </div>
     <div id="content">
         <div id="sidebar">
-
+            <span id="home-sidebar">Home <span></span></span> 
+            <div>
+                <span>Gym <span></span></span> 
+                <span>School <span></span></span> 
+                <span>Work <span></span></span> 
+                <span>Others <span></span></span> 
+            </div>
+            <span id="home-sidebar">Priority <span></span></span>
+            <div>
+                <span style="color: red;">High <span></span></span>
+                <span style="color: orange;">Medium <span></span></span>
+                <span style="color: greenyellow;">Low <span></span></span>
+            </div>
         </div>
         <div id="body">
 
+            <div id="add-modal">
+                <label for="title">Title</label>
+                <input style="width: 200px;" type="text" name="title" id="title">
+                <label for="description">Description</label>
+                <label>
+                    <input type="radio" name="description" id="gym"> Gym
+                </label>
+                <label>
+                    <input type="radio" name="description" id="school"> School
+                </label>
+                <label>
+                    <input type="radio" name="description" id="work"> Work
+                </label>
+                <label>
+                    <input type="radio" name="description" id="others"> Others
+                </label>
+            </div>
+            <div id="add-button"><i class="fa-solid fa-3x fa-plus"></i></div>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
