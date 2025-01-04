@@ -19,25 +19,26 @@
     </div>
     <div id="content">
         <div id="sidebar">
-            <span id="home-sidebar">Home <span></span></span> 
+            <span class="home-sidebar">Home <span></span></span> 
             <div>
                 <span>Gym <span></span></span> 
                 <span>School <span></span></span> 
                 <span>Work <span></span></span> 
                 <span>Others <span></span></span> 
             </div>
-            <span id="home-sidebar">Priority <span></span></span>
+            <span class="home-sidebar">Priority <span></span></span>
             <div>
                 <span style="color: red;">High <span></span></span>
                 <span style="color: orange;">Medium <span></span></span>
-                <span style="color: greenyellow;">Low <span></span></span>
+                <span style="color: green;">Low <span></span></span>
             </div>
         </div>
         <div id="body">
 
             <div id="add-modal">
+                <h2 style="text-align: center;">Add item</h2>
                 <label for="title">Title</label>
-                <input style="width: 200px;" type="text" name="title" id="title">
+                <input placeholder="Item Title" style="width: 200px;" type="text" name="title" id="title"><br>
                 <label for="description">Description</label>
                 <label>
                     <input type="radio" name="description" id="gym"> Gym
@@ -50,7 +51,21 @@
                 </label>
                 <label>
                     <input type="radio" name="description" id="others"> Others
+                </label><br>
+                <label for="date">Due Date</label>
+                <input type="datetime-local" name="date" id="date" style="width: 200px;"><br>
+                <label for="priority"> Priority</label>
+                <label style="color: red;">
+                    <input type="radio" name="priority" id="high"> High
                 </label>
+                <label style="color: orange;">
+                    <input type="radio" name="priority" id="medium"> Medium
+                </label>
+                <label style="color: green;">
+                    <input type="radio" name="priority" id="low"> Low
+                </label><br><br>
+                <span id="add-modal-cancel">Cancel</span>
+                <span id="add-modal-submit">Submit</span>
             </div>
             <div id="add-button"><i class="fa-solid fa-3x fa-plus"></i></div>
         </div>
