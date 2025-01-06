@@ -34,7 +34,6 @@
             </div>
         </div>
         <div id="body">
-
             <div id="add-modal">
                 <h2 style="text-align: center;">Add item</h2>
                 <label for="title">Title</label>
@@ -53,16 +52,16 @@
                     <input type="radio" name="description" id="others"> Others
                 </label><br>
                 <label for="date">Due Date</label>
-                <input type="datetime-local" name="date" id="date" style="width: 200px;"><br>
+                <input type="date" name="date" id="date" style="width: 200px;"><br>
                 <label for="priority"> Priority</label>
                 <label style="color: red;">
-                    <input type="radio" name="priority" id="high"> High
+                    <input type="radio" name="priority" value="high"> High
                 </label>
                 <label style="color: orange;">
-                    <input type="radio" name="priority" id="medium"> Medium
+                    <input type="radio" name="priority" value="medium"> Medium
                 </label>
                 <label style="color: green;">
-                    <input type="radio" name="priority" id="low"> Low
+                    <input type="radio" name="priority" value="low"> Low
                 </label><br><br>
                 <span id="add-modal-cancel">Cancel</span>
                 <span id="add-modal-submit">Submit</span>
