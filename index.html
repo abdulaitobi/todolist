@@ -21,16 +21,10 @@
         <div id="sidebar">
             <span class="home-sidebar">Home <span></span></span> 
             <div>
-                <span>Gym <span></span></span> 
-                <span>School <span></span></span> 
-                <span>Work <span></span></span> 
-                <span>Others <span></span></span> 
-            </div>
-            <span class="home-sidebar">Priority <span></span></span>
-            <div>
-                <span style="color: red;">High <span></span></span>
-                <span style="color: orange;">Medium <span></span></span>
-                <span style="color: green;">Low <span></span></span>
+                <span class="sidebar-category">Gym <span></span></span> 
+                <span class="sidebar-category">School <span></span></span> 
+                <span class="sidebar-category">Work <span></span></span> 
+                <span class="sidebar-category">Others <span></span></span> 
             </div>
         </div>
         <div id="body">
@@ -40,16 +34,16 @@
                 <input placeholder="Item Title" style="width: 200px;" type="text" name="title" id="title"><br>
                 <label for="description">Description</label>
                 <label>
-                    <input type="radio" name="description" id="gym"> Gym
+                    <input type="radio" name="description" value="gym"> Gym
                 </label>
                 <label>
-                    <input type="radio" name="description" id="school"> School
+                    <input type="radio" name="description" value="school"> School
                 </label>
                 <label>
-                    <input type="radio" name="description" id="work"> Work
+                    <input type="radio" name="description" value="work"> Work
                 </label>
                 <label>
-                    <input type="radio" name="description" id="others"> Others
+                    <input type="radio" name="description" value="others"> Others
                 </label><br>
                 <label for="date">Due Date</label>
                 <input type="date" name="date" id="date" style="width: 200px;"><br>

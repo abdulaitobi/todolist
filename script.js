@@ -2,6 +2,9 @@ var addButton = document.getElementById("add-button");
 var addModal = document.getElementById("add-modal");
 var addModalCancel = document.getElementById("add-modal-cancel");
 var addModalSubmit = document.getElementById("add-modal-submit");
+let body = document.getElementById("body");
+let itemsArray = [];
+let displayedItems = {};
 
 addButton.addEventListener("click", function(){
     addModal.style.display = "grid";
@@ -38,7 +41,7 @@ addModalSubmit.addEventListener("click", function(){
         alert("Fill in all info")
     }else {
         alert("Item added");
-        displayItem(title, descriptionValue, date, priorityValue);
+        displayItem(title,descriptionValue, date, priorityValue);
         document.getElementById("title").value = "";
         for (const description of descriptions) {
             description.checked = false;
@@ -51,8 +54,7 @@ addModalSubmit.addEventListener("click", function(){
       }
 })
 
-function displayItem(title, descriptionValue, date, priorityValue){
-    let body = document.getElementById("body");
+function displayItem(title,descriptionValue, date, priorityValue){
     let item = document.createElement("div");
     let colorPhrase = '';
     if(priorityValue == "high"){
@@ -67,16 +69,57 @@ function displayItem(title, descriptionValue, date, priorityValue){
     item.style.display = "flex";
     item.style.alignItems = "center";
     item.style.justifyContent = "space-between";
-    item.innerHTML = 
-        '<input type="checkbox" name="done" id="done">'+
-        '<h2 style="margin-right: auto; margin-left: 10px;">' + title + '</h2>'+
-        '<div style="display: flex; align-items: center; gap: 10px;">'+
+    item.style.border = "1px solid black";
+    item.style.backgroundColor = "antiquewhite";
+    item.style.padding = "10px";
+    item.style.marginBottom = "10px";
+    item.innerHTML =
+        '<input type="checkbox" class="done-checkbox">' +
+        '<h2 class="item-property" style="margin-right: auto; margin-left: 10px; margin-top: 0; margin-bottom: 0">' + title + '</h2>' +
+        '<div style="display: flex; align-items: center; gap: 10px;">' +
         colorPhrase +
-        '<p>' + date + '</p>'+
-        '<i class="fa-solid fa-circle-info"></i>'+
-        '<i class="fa-regular fa-pen-to-square"></i>'+    
-        '<i class="fa-solid fa-trash"></i>';
+        '<p class="item-property">' + date + '</p>' +
+        '<i class="fa-solid fa-circle-info item-property"></i>' +
+        '<i class="fa-regular fa-pen-to-square item-property"></i>' +
+        '<i class="fa-solid fa-trash item-property"></i>' +
+        '</div>';
 
     body.appendChild(item);
+
+    itemsArray.push({ element: item, title, descriptionValue, date, priorityValue });
+
+    let checkbox = item.querySelector(".done-checkbox");
+    let itemProperties = item.querySelectorAll(".item-property");
+
+    checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+            itemProperties.forEach(itemProperty => itemProperty.style.color = "grey");
+            item.querySelector("h2").style.textDecoration = "line-through";
+        } else {
+            itemProperties.forEach(itemProperty => itemProperty.style.color = "black");
+            item.querySelector("h2").style.textDecoration = "none";
+        }
+    });
 }
 
+var sidebarCategories = document.getElementsByClassName("sidebar-category");
+for (const sidebarCategory of sidebarCategories) {
+    sidebarCategory.addEventListener("click", function () {
+        let category = this.textContent.trim();
+        if (displayedItems[category]) {
+            console.log(`Items for ${category} are already displayed.`);
+            return; 
+        }
+        body.innerHTML = "";
+
+        let filteredItems = itemsArray.filter(item => item.descriptionValue.toLowerCase() === category.toLowerCase());
+        if (filteredItems.length > 0) {
+            filteredItems.forEach(item => {
+                displayItem(item.title, item.descriptionValue, item.date, item.priorityValue);
+            });
+            displayedItems[category] = true;
+        } else {
+            alert("You have no " + category + " items")
+        }
+    });
+}
