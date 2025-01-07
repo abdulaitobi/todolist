@@ -107,13 +107,12 @@ for (const sidebarCategory of sidebarCategories) {
     sidebarCategory.addEventListener("click", function () {
         let category = this.textContent.trim();
         if (displayedItems[category]) {
-            console.log(`Items for ${category} are already displayed.`);
             return; 
         }
-        body.innerHTML = "";
 
         let filteredItems = itemsArray.filter(item => item.descriptionValue.toLowerCase() === category.toLowerCase());
         if (filteredItems.length > 0) {
+            body.innerHTML = "";
             filteredItems.forEach(item => {
                 displayItem(item.title, item.descriptionValue, item.date, item.priorityValue);
             });
