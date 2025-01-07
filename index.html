@@ -20,15 +20,23 @@
     <div id="content">
         <div id="sidebar">
             <span class="home-sidebar">Home <span></span></span> 
-            <div>
-                <span class="sidebar-category">Gym <span></span></span> 
-                <span class="sidebar-category">School <span></span></span> 
-                <span class="sidebar-category">Work <span></span></span> 
-                <span class="sidebar-category">Others <span></span></span> 
+            <div id="sidebar-items">
+                <span class="sidebar-category">Gym </span> 
+                <span class="sidebar-category">School </span> 
+                <span class="sidebar-category">Work </span> 
             </div>
+            <div id="add-category-button"><i class="fa-solid fa-1x fa-plus"></i></div>
         </div>
         <div id="body">
-            <div id="add-modal">
+            <div id="add-category-modal">
+                <h2 style="text-align: center;">Add new category</h2>
+                <label for="category-name">Category name</label><br>
+                <input placeholder="Category Name" style="width: 200px;" type="text" name="category-name" id="category-name"><br>
+                <br>
+                <span id="add-category-modal-cancel">Cancel</span>
+                <span id="add-category-modal-submit">Submit</span>
+            </div>
+            <div id="add-item-modal">
                 <h2 style="text-align: center;">Add item</h2>
                 <label for="title">Title</label>
                 <input placeholder="Item Title" style="width: 200px;" type="text" name="title" id="title"><br>
@@ -57,10 +65,10 @@
                 <label style="color: green;">
                     <input type="radio" name="priority" value="low"> Low
                 </label><br><br>
-                <span id="add-modal-cancel">Cancel</span>
-                <span id="add-modal-submit">Submit</span>
+                <span id="add-item-modal-cancel">Cancel</span>
+                <span id="add-item-modal-submit">Submit</span>
             </div>
-            <div id="add-button"><i class="fa-solid fa-3x fa-plus"></i></div>
+            <div id="add-item-button"><i class="fa-solid fa-3x fa-plus"></i></div>
         </div>
     </div>
     <script src="script.js"></script>

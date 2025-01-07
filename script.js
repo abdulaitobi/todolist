@@ -1,20 +1,47 @@
-var addButton = document.getElementById("add-button");
-var addModal = document.getElementById("add-modal");
-var addModalCancel = document.getElementById("add-modal-cancel");
-var addModalSubmit = document.getElementById("add-modal-submit");
+var addItemButton = document.getElementById("add-item-button");
+var addCategoryButton = document.getElementById("add-category-button");
+var addItemModal = document.getElementById("add-item-modal");
+var addCategoryModal = document.getElementById("add-category-modal");
+var addItemModalCancel = document.getElementById("add-item-modal-cancel");
+var addCategoryModalCancel = document.getElementById("add-category-modal-cancel");
+var addItemModalSubmit = document.getElementById("add-item-modal-submit");
+var addCategoryModalSubmit = document.getElementById("add-category-modal-submit");
 let body = document.getElementById("body");
+let sidebarItems = document.getElementById("sidebar-items")
 let itemsArray = [];
 let displayedItems = {};
 
-addButton.addEventListener("click", function(){
-    addModal.style.display = "grid";
+addItemButton.addEventListener("click", function(){
+    addItemModal.style.display = "grid";
+    addCategoryModal.style.display = "none";
 })
 
-addModalCancel.addEventListener("click", function(){
-    addModal.style.display = "none";
+addCategoryButton.addEventListener("click", function(){
+    addCategoryModal.style.display = "grid";
+    addItemModal.style.display = "none";
 })
 
-addModalSubmit.addEventListener("click", function(){
+addItemModalCancel.addEventListener("click", function(){
+    addItemModal.style.display = "none";
+})
+
+addCategoryModalCancel.addEventListener("click", function(){
+    addCategoryModal.style.display = "none";
+})
+
+addCategoryModalSubmit.addEventListener("click", function(){
+    let categoryName = document.getElementById("category-name").value;
+    let category = document.createElement("span");
+    category.textContent = categoryName;
+    category.className = "sidebar-category"
+    sidebarItems.appendChild(category);
+    category.addEventListener("click", function () {
+        displayCategory(this);
+    })
+    addCategoryModal.style.display = "none";
+})
+
+addItemModalSubmit.addEventListener("click", function(){
     let title = document.getElementById("title").value;
 
     let descriptions = document.getElementsByName("description");
@@ -105,7 +132,12 @@ function displayItem(title,descriptionValue, date, priorityValue){
 var sidebarCategories = document.getElementsByClassName("sidebar-category");
 for (const sidebarCategory of sidebarCategories) {
     sidebarCategory.addEventListener("click", function () {
-        let category = this.textContent.trim();
+        displayCategory(this);
+    })
+}
+
+function displayCategory(element){
+    let category = element.textContent.trim();
         if (displayedItems[category]) {
             return; 
         }
@@ -120,5 +152,4 @@ for (const sidebarCategory of sidebarCategories) {
         } else {
             alert("You have no " + category + " items")
         }
-    });
-}
+};
