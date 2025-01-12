@@ -8,10 +8,6 @@ body{
     display: flex;
     border-bottom: 1px solid tan;
 }
-#logo{
-    height: 100px;
-    border-radius: 100%;
-}
 #header{
     font-family: "Rubik Vinyl", serif;
     font-weight: 400;
@@ -42,7 +38,7 @@ body{
     height: fit-content;
 }
 
-.home-sidebar{
+#home-sidebar{
     color:tan ;
 }
 
