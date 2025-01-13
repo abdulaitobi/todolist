@@ -42,7 +42,7 @@ body{
     color:tan ;
 }
 
-#sidebar span:hover, #add-button:hover, #add-item-modal-submit:hover, #add-category-modal-submit:hover, #add-item-modal-cancel:hover, #add-category-modal-cancel:hover, i:hover{
+#sidebar span:hover,.cancel-btn-info:hover, #add-button:hover, #add-item-modal-submit:hover, #add-category-modal-submit:hover, #add-item-modal-cancel:hover, #add-category-modal-cancel:hover, i:hover{
     cursor: pointer;
 }
 

@@ -116,7 +116,7 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed){
             '<i class="fa-regular fa-pen-to-square item-property"></i>' +
             '<i class="fa-solid fa-trash item-property"></i>' +
             '</div>';
-
+    
         body.appendChild(item);
         itemsArray.push({ element: item, title, descriptionValue, date, priorityValue, displayed });
 
@@ -132,19 +132,44 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed){
                 item.querySelector("h2").style.textDecoration = "none";
             }
         });
+
+        let infoButton = item.querySelector(".fa-circle-info");
+        infoButton.addEventListener("click", () => {
+            displayInfo(title, descriptionValue, date, priorityValue);
+        });
+    }
+}
+
+function displayInfo(title, descriptionValue, date, priorityValue, displayed){
+    let infoBox = document.createElement("div");
+    infoBox.style.height = "fit-content";
+    infoBox.style.width = "fit-content";
+    infoBox.style.border = "1px solid black";
+    infoBox.style.backgroundColor = "antiquewhite";
+    infoBox.style.padding = "10px";
+    infoBox.style.marginBottom = "10px";
+    infoBox.innerHTML = 
+        '<h2 style="margin-right: auto; margin-left: 10px; margin-top: 0; margin-bottom: 0">' + title + '</h2>' +
+        '<p> Description:  ' + descriptionValue + '</p>' +
+        '<p> Priority: ' + priorityValue + '</p>' +
+        '<p> Due Date: ' + date + '</p>' + 
+        '<span class="cancel-btn-info">Cancel</span>';
+
+    body.appendChild(infoBox);
+
+    let cancelInfoBtns = document.getElementsByClassName("cancel-btn-info")
+
+    for(const cancelInfoBtn of cancelInfoBtns){
+        cancelInfoBtn.addEventListener("click", function(){
+            infoBox.style.display = "none"
+        })
     }
 }
 
 var sidebarCategories = document.getElementsByClassName("sidebar-category");
 for (const sidebarCategory of sidebarCategories) {
     sidebarCategory.addEventListener("click", function () {
-        let category = this.textContent.trim();
-        if (displayedItems[category]) {
-            return; 
-        }
-        else{
-            displayCategory(this);
-        }
+        displayCategory(this);
     })
 }
 
