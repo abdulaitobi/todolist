@@ -90,6 +90,7 @@ body{
     bottom: 25vh;
     right: 25vw;
     display: none;
+    z-index: 10000;
 }
 
 #add-category-modal{
@@ -108,6 +109,7 @@ body{
     bottom: 50vh;
     right: 12vw;
     display: none;
+    z-index: 10000;
 }
 
 #add-item-modal-cancel, #add-category-modal-cancel{
@@ -127,4 +129,20 @@ body{
     font-weight: 700;
     padding-left: 20px;
     padding-top: 20px;
+}
+
+#description-options{
+    display: grid;
+}
+
+#blanket{
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #999;
+    opacity: 50%;
+    z-index: 9999;
+    height: 100vh;
+    width: 100vw;
 }

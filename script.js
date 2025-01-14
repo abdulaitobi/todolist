@@ -6,7 +6,9 @@ var addItemModalCancel = document.getElementById("add-item-modal-cancel");
 var addCategoryModalCancel = document.getElementById("add-category-modal-cancel");
 var addItemModalSubmit = document.getElementById("add-item-modal-submit");
 var addCategoryModalSubmit = document.getElementById("add-category-modal-submit");
+var descriptionOptions = document.getElementById("description-options");
 let body = document.getElementById("body");
+var blanket = document.getElementById("blanket");
 body.setAttribute("data-previous-content", body.innerHTML);
 let sidebarItems = document.getElementById("sidebar-items")
 let itemsArray = [];
@@ -14,22 +16,27 @@ let itemsArray = [];
 addItemButton.addEventListener("click", function(){
     addItemModal.style.display = "grid";
     addCategoryModal.style.display = "none";
+    blanket.style.display = "block"
 })
 
 addCategoryButton.addEventListener("click", function(){
     addCategoryModal.style.display = "grid";
     addItemModal.style.display = "none";
+    blanket.style.display = "block"
 })
 
 addItemModalCancel.addEventListener("click", function(){
     addItemModal.style.display = "none";
+    blanket.style.display = "none"
 })
 
 addCategoryModalCancel.addEventListener("click", function(){
     addCategoryModal.style.display = "none";
+    blanket.style.display = "none"
 })
 
 addCategoryModalSubmit.addEventListener("click", function(){
+    blanket.style.display = "none"
     let categoryName = document.getElementById("category-name").value;
     let category = document.createElement("span");
     category.textContent = categoryName;
@@ -39,9 +46,19 @@ addCategoryModalSubmit.addEventListener("click", function(){
         displayCategory(this);
     })
     addCategoryModal.style.display = "none";
+    document.getElementById('category-name').value = "";
+    let categoryLabel = document.createElement("label");
+    let categoryOption = document.createElement("input");
+    categoryOption.type = "radio";
+    categoryOption.name = "description";
+    categoryOption.value = categoryName.toLowerCase();
+    categoryLabel.appendChild(categoryOption);
+    categoryLabel.insertAdjacentText('beforeend', categoryName);
+    descriptionOptions.appendChild(categoryLabel);
 })
 
 addItemModalSubmit.addEventListener("click", function(){
+    blanket.style.display = "none"
     let title = document.getElementById("title").value;
 
     let descriptions = document.getElementsByName("description");
@@ -148,6 +165,10 @@ function displayInfo(title, descriptionValue, date, priorityValue, displayed){
     infoBox.style.backgroundColor = "antiquewhite";
     infoBox.style.padding = "10px";
     infoBox.style.marginBottom = "10px";
+    infoBox.style.position = 'absolute'
+    infoBox.style.left = 'calc(50vw - 100px)';
+    infoBox.style.top = 'calc(50vh - 100px)';
+    infoBox.style.zIndex = "10000";
     infoBox.innerHTML = 
         '<h2 style="margin-right: auto; margin-left: 10px; margin-top: 0; margin-bottom: 0">' + title + '</h2>' +
         '<p> Description:  ' + descriptionValue + '</p>' +
@@ -155,6 +176,9 @@ function displayInfo(title, descriptionValue, date, priorityValue, displayed){
         '<p> Due Date: ' + date + '</p>' + 
         '<span class="cancel-btn-info">Cancel</span>';
 
+    blanket.style.display = "block"
+    addCategoryModal.style.display = "none";
+    addItemModal.style.display = "none";
     body.appendChild(infoBox);
 
     let cancelInfoBtns = document.getElementsByClassName("cancel-btn-info")
@@ -162,6 +186,7 @@ function displayInfo(title, descriptionValue, date, priorityValue, displayed){
     for(const cancelInfoBtn of cancelInfoBtns){
         cancelInfoBtn.addEventListener("click", function(){
             infoBox.style.display = "none"
+            blanket.style.display = "none"
         })
     }
 }

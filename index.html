@@ -13,64 +13,65 @@
     <script src="https://kit.fontawesome.com/ce954a986c.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div id="head">
-        <img id="logo" src="Logo.png" alt="Logo">
-        <h1 id="header">TO-DO LIST</h1>
+    <div id="blanket">
     </div>
-    <div id="content">
-        <div id="sidebar">
-            <span id="home-sidebar">Home</span> 
-            <div id="sidebar-items">
-                <span class="sidebar-category">Gym </span> 
-                <span class="sidebar-category">School </span> 
-                <span class="sidebar-category">Work </span> 
-            </div>
-            <div id="add-category-button"><i class="fa-solid fa-1x fa-plus"></i></div>
+        <div id="head">
+            <img id="logo" src="Logo.png" alt="Logo">
+            <h1 id="header">TO-DO LIST</h1>
         </div>
-        <div id="body">
-            <div id="add-category-modal">
-                <h2 style="text-align: center;">Add new category</h2>
-                <label for="category-name">Category name</label><br>
-                <input placeholder="Category Name" style="width: 200px;" type="text" name="category-name" id="category-name"><br>
-                <br>
-                <span id="add-category-modal-cancel">Cancel</span>
-                <span id="add-category-modal-submit">Submit</span>
+        <div id="content">
+            <div id="sidebar">
+                <span id="home-sidebar">Home</span> 
+                <div id="sidebar-items">
+                    <span class="sidebar-category">Gym </span> 
+                    <span class="sidebar-category">School </span> 
+                    <span class="sidebar-category">Work </span> 
+                </div>
+                <div id="add-category-button"><i class="fa-solid fa-1x fa-plus"></i></div>
             </div>
-            <div id="add-item-modal">
-                <h2 style="text-align: center;">Add item</h2>
-                <label for="title">Title</label>
-                <input placeholder="Item Title" style="width: 200px;" type="text" name="title" id="title"><br>
-                <label for="description">Description</label>
-                <label>
-                    <input type="radio" name="description" value="gym"> Gym
-                </label>
-                <label>
-                    <input type="radio" name="description" value="school"> School
-                </label>
-                <label>
-                    <input type="radio" name="description" value="work"> Work
-                </label>
-                <label>
-                    <input type="radio" name="description" value="others"> Others
-                </label><br>
-                <label for="date">Due Date</label>
-                <input type="date" name="date" id="date" style="width: 200px;"><br>
-                <label for="priority"> Priority</label>
-                <label style="color: red;">
-                    <input type="radio" name="priority" value="high"> High
-                </label>
-                <label style="color: orange;">
-                    <input type="radio" name="priority" value="medium"> Medium
-                </label>
-                <label style="color: green;">
-                    <input type="radio" name="priority" value="low"> Low
-                </label><br><br>
-                <span id="add-item-modal-cancel">Cancel</span>
-                <span id="add-item-modal-submit">Submit</span>
+            <div id="body">
+                <div id="add-category-modal">
+                    <h2 style="text-align: center;">Add new category</h2>
+                    <label for="category-name">Category name</label><br>
+                    <input placeholder="Category Name" style="width: 200px;" type="text" name="category-name" id="category-name"><br>
+                    <br>
+                    <span id="add-category-modal-cancel">Cancel</span>
+                    <span id="add-category-modal-submit">Submit</span>
+                </div>
+                <div id="add-item-modal">
+                    <h2 style="text-align: center;">Add item</h2>
+                    <label for="title">Title</label>
+                    <input placeholder="Item Title" style="width: 200px;" type="text" name="title" id="title"><br>
+                    <div id="description-options">
+                        <label for="description">Description</label>
+                        <label>
+                            <input type="radio" name="description" value="gym"> Gym
+                        </label>
+                        <label>
+                            <input type="radio" name="description" value="school"> School
+                        </label>
+                        <label>
+                            <input type="radio" name="description" value="work"> Work
+                        </label>
+                    </div>
+                    <label for="date">Due Date</label>
+                    <input type="date" name="date" id="date" style="width: 200px;"><br>
+                    <label for="priority"> Priority</label>
+                    <label style="color: red;">
+                        <input type="radio" name="priority" value="high"> High
+                    </label>
+                    <label style="color: orange;">
+                        <input type="radio" name="priority" value="medium"> Medium
+                    </label>
+                    <label style="color: green;">
+                        <input type="radio" name="priority" value="low"> Low
+                    </label><br><br>
+                    <span id="add-item-modal-cancel">Cancel</span>
+                    <span id="add-item-modal-submit">Submit</span>
+                </div>
+                <div id="add-item-button"><i class="fa-solid fa-3x fa-plus"></i></div>
             </div>
-            <div id="add-item-button"><i class="fa-solid fa-3x fa-plus"></i></div>
         </div>
-    </div>
     <script src="script.js"></script>
 </body>
 </html>
