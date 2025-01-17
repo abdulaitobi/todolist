@@ -88,7 +88,7 @@ body{
     font-size: 20px;
     position: absolute;
     bottom: 25vh;
-    right: 25vw;
+    right: calc(50vw - 200px);
     display: none;
     z-index: 10000;
 }
@@ -107,7 +107,7 @@ body{
     font-size: 20px;
     position: absolute;
     bottom: 50vh;
-    right: 12vw;
+    right: calc(50vw - 200px);
     display: none;
     z-index: 10000;
 }

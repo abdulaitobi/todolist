@@ -200,7 +200,7 @@ for (const sidebarCategory of sidebarCategories) {
 
 var homeSidebar = document.getElementById("home-sidebar");
 homeSidebar.addEventListener("click", function(){
-    body.innerHTML = body.getAttribute("data-previous-content");
+    location.reload();
     itemsArray.forEach(item => {
         displayItem(item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed);
         item.displayed = true;
