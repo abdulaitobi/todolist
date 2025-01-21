@@ -8,8 +8,8 @@ var addItemModalSubmit = document.getElementById("add-item-modal-submit");
 var addCategoryModalSubmit = document.getElementById("add-category-modal-submit");
 var descriptionOptions = document.getElementById("description-options");
 let body = document.getElementById("body");
+let bodySubdiv = document.getElementById("body-subdiv");
 var blanket = document.getElementById("blanket");
-body.setAttribute("data-previous-content", body.innerHTML);
 let sidebarItems = document.getElementById("sidebar-items")
 let itemsArray = [];
 
@@ -86,7 +86,6 @@ addItemModalSubmit.addEventListener("click", function(){
     if(!title || !descriptionValue || !date || !priorityValue){
         alert("Fill in all info")
     }else {
-        alert("Item added");
         displayItem(title,descriptionValue, date, priorityValue, displayed);
         document.getElementById("title").value = "";
         for (const description of descriptions) {
@@ -134,7 +133,7 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed){
             '<i class="fa-solid fa-trash item-property"></i>' +
             '</div>';
     
-        body.appendChild(item);
+        bodySubdiv.appendChild(item);
         itemsArray.push({ element: item, title, descriptionValue, date, priorityValue, displayed });
 
         let checkbox = item.querySelector(".done-checkbox");
@@ -179,7 +178,7 @@ function displayInfo(title, descriptionValue, date, priorityValue, displayed){
     blanket.style.display = "block"
     addCategoryModal.style.display = "none";
     addItemModal.style.display = "none";
-    body.appendChild(infoBox);
+    bodySubdiv.appendChild(infoBox);
 
     let cancelInfoBtns = document.getElementsByClassName("cancel-btn-info")
 
@@ -200,23 +199,29 @@ for (const sidebarCategory of sidebarCategories) {
 
 var homeSidebar = document.getElementById("home-sidebar");
 homeSidebar.addEventListener("click", function(){
-    location.reload();
+    bodySubdiv.innerHTML = "";
+    addItemButton.style.display = "flex";
     itemsArray.forEach(item => {
-        displayItem(item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed);
-        item.displayed = true;
+        if(!item.displayed){
+            displayItem(item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed);
+            item.displayed = true;
+        }
     })
 })
 
 function displayCategory(element){
     let category = element.textContent.trim();
-        let filteredItems = itemsArray.filter(item => item.descriptionValue.toLowerCase() === category.toLowerCase());
-        if (filteredItems.length > 0) {
-            body.innerHTML = "";
-            filteredItems.forEach(item => {
+    let filteredItems = itemsArray.filter(item => item.descriptionValue.toLowerCase() === category.toLowerCase());
+    if (filteredItems.length > 0) {
+        bodySubdiv.innerHTML = "";
+        addItemButton.style.display = "none";
+        filteredItems.forEach(item => {
+            if(!item.displayed){
                 displayItem(item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed);
                 item.displayed = true;
-            });
-        } else {
-            alert("You have no " + category + " items")
-        }
+            }
+        });
+    } else {
+        alert("You have no " + category + " items")
+    }
 };
