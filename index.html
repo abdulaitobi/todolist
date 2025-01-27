@@ -43,33 +43,64 @@
                 <div id="add-item-modal">
                     <h2 style="text-align: center;">Add item</h2>
                     <label for="title">Title</label>
-                    <input placeholder="Item Title" style="width: 200px;" type="text" name="title" id="title"><br>
+                    <input placeholder="Item Title" style="width: 200px;" type="text" name="title" id="add-item-title"><br>
                     <div id="description-options">
-                        <label for="description">Description</label>
+                        <label for="add-item-description">Description</label>
                         <label>
-                            <input type="radio" name="description" value="gym"> Gym
+                            <input type="radio" name="add-item-description" value="gym"> Gym
                         </label>
                         <label>
-                            <input type="radio" name="description" value="school"> School
+                            <input type="radio" name="add-item-description" value="school"> School
                         </label>
                         <label>
-                            <input type="radio" name="description" value="work"> Work
+                            <input type="radio" name="add-item-description" value="work"> Work
                         </label>
                     </div>
                     <label for="date">Due Date</label>
-                    <input type="date" name="date" id="date" style="width: 200px;"><br>
-                    <label for="priority"> Priority</label>
+                    <input type="date" name="date" id="add-item-date" style="width: 200px;"><br>
+                    <label for="add-item-priority"> Priority</label>
                     <label style="color: red;">
-                        <input type="radio" name="priority" value="high"> High
+                        <input type="radio" name="add-item-priority" value="high"> High
                     </label>
                     <label style="color: orange;">
-                        <input type="radio" name="priority" value="medium"> Medium
+                        <input type="radio" name="add-item-priority" value="medium"> Medium
                     </label>
                     <label style="color: green;">
-                        <input type="radio" name="priority" value="low"> Low
+                        <input type="radio" name="add-item-priority" value="low"> Low
                     </label><br><br>
                     <span id="add-item-modal-cancel">Cancel</span>
                     <span id="add-item-modal-submit">Submit</span>
+                </div>
+                <div id="edit-item-modal">
+                    <h2 style="text-align: center;">Edit item</h2>
+                    <label for="title">Title</label>
+                    <input placeholder="Item Title" style="width: 200px;" type="text" name="title" id="edit-item-title"><br>
+                    <div id="description-options">
+                        <label for="edit-item-description">Description</label>
+                        <label>
+                            <input type="radio" name="edit-item-description" value="gym"> Gym
+                        </label>
+                        <label>
+                            <input type="radio" name="edit-item-description" value="school"> School
+                        </label>
+                        <label>
+                            <input type="radio" name="edit-item-description" value="work"> Work
+                        </label>
+                    </div>
+                    <label for="date">Due Date</label>
+                    <input type="date" name="date" id="edit-item-date" style="width: 200px;"><br>
+                    <label for="edit-item-priority"> Priority</label>
+                    <label style="color: red;">
+                        <input type="radio" name="edit-item-priority" value="high"> High
+                    </label>
+                    <label style="color: orange;">
+                        <input type="radio" name="edit-item-priority" value="medium"> Medium
+                    </label>
+                    <label style="color: green;">
+                        <input type="radio" name="edit-item-priority" value="low"> Low
+                    </label><br><br>
+                    <span id="edit-item-modal-cancel">Cancel</span>
+                    <span id="edit-item-modal-submit">Submit</span>
                 </div>
                 <div id="add-item-button"><i class="fa-solid fa-3x fa-plus"></i></div>
             </div>

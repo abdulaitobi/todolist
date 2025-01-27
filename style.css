@@ -42,7 +42,7 @@ body{
     color:tan ;
 }
 
-#sidebar span:hover,.cancel-btn-info:hover, #add-button:hover, #add-item-modal-submit:hover, #add-category-modal-submit:hover, #add-item-modal-cancel:hover, #add-category-modal-cancel:hover, i:hover{
+#sidebar span:hover,.cancel-btn-info:hover, #add-button:hover,#edit-item-modal-submit:hover, #edit-item-modal-cancel:hover , #add-item-modal-submit:hover, #add-category-modal-submit:hover, #add-item-modal-cancel:hover, #add-category-modal-cancel:hover, i:hover{
     cursor: pointer;
 }
 
@@ -92,6 +92,24 @@ body{
     z-index: 10000;
 }
 
+#edit-item-modal{
+    background-color:floralwhite;
+    width: 400px;
+    padding: 10px;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    box-shadow: 5px 5px 10px #999;
+    font-family: "Dancing Script", serif;
+    font-weight: 700;
+    font-size: 20px;
+    position: absolute;
+    bottom: 25vh;
+    right: calc(50vw - 200px);
+    display: none;
+    z-index: 10000;
+}
+
 #add-category-modal{
     background-color:floralwhite;
     width: 400px;
@@ -110,13 +128,13 @@ body{
     z-index: 10000;
 }
 
-#add-item-modal-cancel, #add-category-modal-cancel{
+#add-item-modal-cancel, #add-category-modal-cancel, #edit-item-modal-cancel{
     position: absolute;
     bottom: 10px;
     left: 10px;
 }
 
-#add-item-modal-submit, #add-category-modal-submit{
+#add-item-modal-submit, #add-category-modal-submit, #edit-item-modal-submit{
     position: absolute;
     bottom: 10px;
     right: 10px;
