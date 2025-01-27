@@ -16,6 +16,8 @@ var blanket = document.getElementById("blanket");
 let sidebarItems = document.getElementById("sidebar-items")
 let itemsArray = [];
 
+displayAllItems();
+
 addItemButton.addEventListener("click", function(){
     addItemModal.style.display = "grid";
     addCategoryModal.style.display = "none";
@@ -172,6 +174,7 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed, che
         let editButton = item.querySelector(".fa-pen-to-square");
         editButton.addEventListener("click", () => {
             let targetItem = itemsArray.find(obj => obj.element === item);
+            console.log(targetItem);
             editItemModal.style.display = "grid";
             blanket.style.display = "block";
 
@@ -187,6 +190,7 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed, che
             editItemDescriptions.forEach(description => {
                 description.checked = description.value === targetItem.descriptionValue;
             });
+            console.log("before submit" + itemsArray);
             editItemModalSubmit.addEventListener("click", function(){
                 let newTitle = document.getElementById("edit-item-title").value || targetItem.title;
                 let newDate = document.getElementById("edit-item-date").value || targetItem.date;
@@ -214,6 +218,9 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed, che
                 }
                 else{
                     editItem(targetItem, newTitle, newDescriptionValue, newDate, newPriorityValue);
+                    targetItem = null;
+                    displayAllItems();
+                    console.log("after submit" , itemsArray);
                 }
                 editItemModal.style.display = "none";
                 blanket.style.display = "none";
@@ -257,45 +264,8 @@ function displayInfo(title, descriptionValue, date, priorityValue, displayed){
     }
 }
 
-function editItem(targetItem, newTitle,newDescriptionValue, newDate, newPriorityValue){
-    if (newTitle) targetItem.title = newTitle;
-    if (newDate) targetItem.date = newDate;
-    if (newPriorityValue) targetItem.priorityValue = newPriorityValue;
-    if (newDescriptionValue) targetItem.descriptionValue = newDescriptionValue;
-
-    // Update the DOM element
-    const itemElement = targetItem.element;
-    if (newTitle) {
-        const titleElement = itemElement.querySelector("h2");
-        titleElement.textContent = newTitle;
-    }
-    if (newDate) {
-        const dateElement = itemElement.querySelector(".item-property:nth-child(2)");
-        if (dateElement) {
-            dateElement.textContent = newDate;
-        }
-    }
-
-    if (newPriorityValue) {
-        const color =
-            newPriorityValue === "high" ? "red" :
-            newPriorityValue === "medium" ? "orange" : "green";
-            const priorityElement = itemElement.querySelector("span");
-            if (priorityElement) {
-                priorityElement.style.backgroundColor = color;
-            }
-    }
-}
-
-var sidebarCategories = document.getElementsByClassName("sidebar-category");
-for (const sidebarCategory of sidebarCategories) {
-    sidebarCategory.addEventListener("click", function () {
-        displayCategory(this);
-    })
-}
-
-var homeSidebar = document.getElementById("home-sidebar");
-homeSidebar.addEventListener("click", function(){
+function displayAllItems(){
+    console.log("display all items");
     bodySubdiv.innerHTML = "";
     addItemButton.style.display = "flex";
     itemsArray.forEach(item => {
@@ -314,7 +284,50 @@ homeSidebar.addEventListener("click", function(){
                 item.element.querySelector("h2").style.textDecoration = "line-through";
             }
         }
+    });
+}
+
+function editItem(targetItem, newTitle,newDescriptionValue, newDate, newPriorityValue){
+    if (newTitle) targetItem.title = newTitle || "";
+    if (newDate) targetItem.date = newDate;
+    if (newPriorityValue) targetItem.priorityValue = newPriorityValue;
+    if (newDescriptionValue) targetItem.descriptionValue = newDescriptionValue;
+
+    // Update the DOM element
+    const itemElement = targetItem.element;
+    if (newTitle) {
+        const titleElement = itemElement.querySelector("h2");
+        titleElement.textContent = newTitle;
+    }
+    if (newDate) {
+        const dateElement = itemElement.querySelector(".item-property:nth-child(2)");
+        if (dateElement) {
+            dateElement.textContent = newDate;
+        }
+        console.log(newDate);
+    }
+
+    if (newPriorityValue) {
+        const color =
+        newPriorityValue === "high" ? "red" :
+        newPriorityValue === "medium" ? "orange" : "green";
+        const priorityElement = itemElement.querySelector("span");
+        if (priorityElement) {
+            priorityElement.style.backgroundColor = color;
+        }
+    }
+}
+
+var sidebarCategories = document.getElementsByClassName("sidebar-category");
+for (const sidebarCategory of sidebarCategories) {
+    sidebarCategory.addEventListener("click", function () {
+        displayCategory(this);
     })
+}
+
+var homeSidebar = document.getElementById("home-sidebar");
+homeSidebar.addEventListener("click", function(){
+    displayAllItems();
 })
 
 function displayCategory(element){
