@@ -16,8 +16,6 @@ var blanket = document.getElementById("blanket");
 let sidebarItems = document.getElementById("sidebar-items")
 let itemsArray = [];
 
-displayAllItems();
-
 addItemButton.addEventListener("click", function(){
     addItemModal.style.display = "grid";
     addCategoryModal.style.display = "none";
@@ -69,35 +67,37 @@ addCategoryModalSubmit.addEventListener("click", function(){
 
 addItemModalSubmit.addEventListener("click", function(){
     blanket.style.display = "none"
-    let title = document.getElementById("add-item-title").value;
+    let itemObj = new Object();
+    itemObj.id = itemsArray.length;
+    itemObj.title = document.getElementById("add-item-title").value;
 
     let descriptions = document.getElementsByName("add-item-description");
-    let descriptionValue = '';
     for (const description of descriptions) {
         if (description.checked) {
-        descriptionValue = description.value;
-        break; 
+            itemObj.descriptionValue = description.value;
+            break; 
         }
     }
 
-    let date = document.getElementById("add-item-date").value;
+    itemObj.date = document.getElementById("add-item-date").value;
 
     let priorities = document.getElementsByName("add-item-priority");
-    let priorityValue = '';
     for (const priority of priorities) {
         if (priority.checked) {
-        priorityValue = priority.value;
-        break; 
+            itemObj.priorityValue = priority.value;
+            break; 
         }
     }
 
-    let displayed = false;
-    let checked = false;
+    itemObj.displayed = false;
+    itemObj.checked = false;
 
-    if(!title || !descriptionValue || !date || !priorityValue){
+    if(!itemObj.title || !itemObj.descriptionValue || !itemObj.date || !itemObj.priorityValue){
         alert("Fill in all info")
     }else {
-        displayItem(title,descriptionValue, date, priorityValue, displayed, checked);
+        itemsArray.push(itemObj);
+        console.log(itemsArray);
+        displayItem(itemObj.id, itemObj.title,itemObj.descriptionValue, itemObj.date, itemObj.priorityValue, itemObj.displayed, itemObj.checked);
         document.getElementById("add-item-title").value = "";
         for (const description of descriptions) {
             description.checked = false;
@@ -107,14 +107,14 @@ addItemModalSubmit.addEventListener("click", function(){
             priority.checked = false;
         }
         addItemModal.style.display = "none";
-      }
+    }
 })
 
-function displayItem(title,descriptionValue, date, priorityValue, displayed, checked){
-    if(displayed === true){
-        return;
-    }
-    else{
+function displayItem(id,title,descriptionValue, date, priorityValue, displayed, checked){
+    // if(displayed === true){
+    //     return;
+    // }
+    //else{
         let item = document.createElement("div");
         let colorPhrase = '';
         if(priorityValue == "high"){
@@ -168,32 +168,38 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed, che
 
         let infoButton = item.querySelector(".fa-circle-info");
         infoButton.addEventListener("click", () => {
-            displayInfo(title, descriptionValue, date, priorityValue, displayed);
+            displayInfo(title, descriptionValue, date, priorityValue);
         });
 
         let editButton = item.querySelector(".fa-pen-to-square");
         editButton.addEventListener("click", () => {
-            let targetItem = itemsArray.find(obj => obj.element === item);
+            let targetItem;
+            for (const target of itemsArray) {
+                if (target.id === id) {
+                    targetItem = target;
+                    break;
+                }
+            }
             console.log(targetItem);
             editItemModal.style.display = "grid";
             blanket.style.display = "block";
 
-            document.getElementById("edit-item-title").value = targetItem.title || '';
-            document.getElementById("edit-item-date").value = targetItem.date || '';
+            document.getElementById("edit-item-title").value = title || '';
+            document.getElementById("edit-item-date").value = date || '';
 
             let editItemPriorities = document.getElementsByName("edit-item-priority");
             editItemPriorities.forEach(priority => {
-                priority.checked = priority.value === targetItem.priorityValue;
+                priority.checked = priority.value === priorityValue;
             });
 
             let editItemDescriptions = document.getElementsByName("edit-item-description");
             editItemDescriptions.forEach(description => {
-                description.checked = description.value === targetItem.descriptionValue;
+                description.checked = description.value === descriptionValue;
             });
             console.log("before submit" + itemsArray);
             editItemModalSubmit.addEventListener("click", function(){
-                let newTitle = document.getElementById("edit-item-title").value || targetItem.title;
-                let newDate = document.getElementById("edit-item-date").value || targetItem.date;
+                let newTitle = document.getElementById("edit-item-title").value || title;
+                let newDate = document.getElementById("edit-item-date").value || date;
 
                 let newPriorityValue = '';
                 for (const editItemPriority of editItemPriorities) {
@@ -202,7 +208,7 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed, che
                         break;
                     }
                 }
-                if (!newPriorityValue) newPriorityValue = targetItem.priorityValue;
+                if (!newPriorityValue) newPriorityValue = priorityValue;
 
                 let newDescriptionValue = '';
                 for (const editItemDescription of editItemDescriptions) {
@@ -211,14 +217,13 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed, che
                         break;
                     }
                 }
-                if (!newDescriptionValue) newDescriptionValue = targetItem.descriptionValue;
+                if (!newDescriptionValue) newDescriptionValue = descriptionValue;
 
                 if(!newTitle && !newPriorityValue && newDate && !newDescriptionValue){
                     alert("Fill in at least one info")
                 }
                 else{
                     editItem(targetItem, newTitle, newDescriptionValue, newDate, newPriorityValue);
-                    targetItem = null;
                     displayAllItems();
                     console.log("after submit" , itemsArray);
                 }
@@ -226,11 +231,10 @@ function displayItem(title,descriptionValue, date, priorityValue, displayed, che
                 blanket.style.display = "none";
             });
         });
-        itemsArray.push({ element: item, title, descriptionValue, date, priorityValue, displayed, checked });
     }
-}
+//}
 
-function displayInfo(title, descriptionValue, date, priorityValue, displayed){
+function displayInfo(title, descriptionValue, date, priorityValue){
     let infoBox = document.createElement("div");
     infoBox.style.height = "fit-content";
     infoBox.style.width = "fit-content";
@@ -269,53 +273,53 @@ function displayAllItems(){
     bodySubdiv.innerHTML = "";
     addItemButton.style.display = "flex";
     itemsArray.forEach(item => {
-        if(!item.displayed){
-            const checkbox = item.element.querySelector(".done-checkbox");
-            item.checked = checkbox.checked;
+        //if(!item.displayed){
+            // const checkbox = item.element.querySelector(".done-checkbox");
+            // item.checked = checkbox.checked;
 
-            displayItem(item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed, item.checked);
-            item.displayed = true;
+            displayItem(item.id, item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed, item.checked);
+            //item.displayed = true;
 
-            if(item.checked){
-                checkbox.checked = true; // Sync the DOM checkbox state
-                item.element.querySelectorAll(".item-property").forEach(itemProperty => {
-                    itemProperty.style.color = "grey";
-                });
-                item.element.querySelector("h2").style.textDecoration = "line-through";
-            }
-        }
+            // if(item.checked){
+            //     checkbox.checked = true; // Sync the DOM checkbox state
+            //     item.element.querySelectorAll(".item-property").forEach(itemProperty => {
+            //         itemProperty.style.color = "grey";
+            //     });
+            //     item.element.querySelector("h2").style.textDecoration = "line-through";
+            // }
+        //}
     });
 }
 
-function editItem(targetItem, newTitle,newDescriptionValue, newDate, newPriorityValue){
+function editItem(targetItem,newTitle,newDescriptionValue, newDate, newPriorityValue){
     if (newTitle) targetItem.title = newTitle || "";
     if (newDate) targetItem.date = newDate;
     if (newPriorityValue) targetItem.priorityValue = newPriorityValue;
     if (newDescriptionValue) targetItem.descriptionValue = newDescriptionValue;
 
     // Update the DOM element
-    const itemElement = targetItem.element;
-    if (newTitle) {
-        const titleElement = itemElement.querySelector("h2");
-        titleElement.textContent = newTitle;
-    }
-    if (newDate) {
-        const dateElement = itemElement.querySelector(".item-property:nth-child(2)");
-        if (dateElement) {
-            dateElement.textContent = newDate;
-        }
-        console.log(newDate);
-    }
+    // const itemElement = targetItem.element;
+    // if (newTitle) {
+    //     const titleElement = itemElement.querySelector("h2");
+    //     titleElement.textContent = newTitle;
+    // }
+    // if (newDate) {
+    //     const dateElement = itemElement.querySelector(".item-property:nth-child(2)");
+    //     if (dateElement) {
+    //         dateElement.textContent = newDate;
+    //     }
+    //     console.log(newDate);
+    // }
 
-    if (newPriorityValue) {
-        const color =
-        newPriorityValue === "high" ? "red" :
-        newPriorityValue === "medium" ? "orange" : "green";
-        const priorityElement = itemElement.querySelector("span");
-        if (priorityElement) {
-            priorityElement.style.backgroundColor = color;
-        }
-    }
+    // if (newPriorityValue) {
+    //     const color =
+    //     newPriorityValue === "high" ? "red" :
+    //     newPriorityValue === "medium" ? "orange" : "green";
+    //     const priorityElement = itemElement.querySelector("span");
+    //     if (priorityElement) {
+    //         priorityElement.style.backgroundColor = color;
+    //     }
+    // }
 }
 
 var sidebarCategories = document.getElementsByClassName("sidebar-category");
@@ -337,21 +341,21 @@ function displayCategory(element){
         bodySubdiv.innerHTML = "";
         addItemButton.style.display = "none";
         filteredItems.forEach(item => {
-            if(!item.displayed){
-                const checkbox = item.element.querySelector(".done-checkbox");
-                item.checked = checkbox.checked;
+            //if(!item.displayed){
+                // const checkbox = item.element.querySelector(".done-checkbox");
+                // item.checked = checkbox.checked;
 
-                displayItem(item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed, item.checked);
-                item.displayed = true;
+                displayItem(item.id, item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed, item.checked);
+                //item.displayed = true;
 
-                if(item.checked){
-                    checkbox.checked = true; // Sync the DOM checkbox state
-                    item.element.querySelectorAll(".item-property").forEach(itemProperty => {
-                        itemProperty.style.color = "grey";
-                    });
-                    item.element.querySelector("h2").style.textDecoration = "line-through";
-                }
-            }
+                // if(item.checked){
+                //     checkbox.checked = true; // Sync the DOM checkbox state
+                //     item.element.querySelectorAll(".item-property").forEach(itemProperty => {
+                //         itemProperty.style.color = "grey";
+                //     });
+                //     item.element.querySelector("h2").style.textDecoration = "line-through";
+                // }
+            //}
         });
     } else {
         alert("You have no " + category + " items")
