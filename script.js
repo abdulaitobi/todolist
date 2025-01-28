@@ -68,7 +68,7 @@ addCategoryModalSubmit.addEventListener("click", function(){
 addItemModalSubmit.addEventListener("click", function(){
     blanket.style.display = "none"
     let itemObj = new Object();
-    itemObj.id = itemsArray.length;
+    itemObj.id++;
     itemObj.title = document.getElementById("add-item-title").value;
 
     let descriptions = document.getElementsByName("add-item-description");
@@ -89,15 +89,13 @@ addItemModalSubmit.addEventListener("click", function(){
         }
     }
 
-    itemObj.displayed = false;
     itemObj.checked = false;
 
     if(!itemObj.title || !itemObj.descriptionValue || !itemObj.date || !itemObj.priorityValue){
         alert("Fill in all info")
     }else {
         itemsArray.push(itemObj);
-        console.log(itemsArray);
-        displayItem(itemObj.id, itemObj.title,itemObj.descriptionValue, itemObj.date, itemObj.priorityValue, itemObj.displayed, itemObj.checked);
+        displayItem(itemObj.id, itemObj.title,itemObj.descriptionValue, itemObj.date, itemObj.priorityValue, itemObj.checked);
         document.getElementById("add-item-title").value = "";
         for (const description of descriptions) {
             description.checked = false;
@@ -110,129 +108,123 @@ addItemModalSubmit.addEventListener("click", function(){
     }
 })
 
-function displayItem(id,title,descriptionValue, date, priorityValue, displayed, checked){
-    // if(displayed === true){
-    //     return;
-    // }
-    //else{
-        let item = document.createElement("div");
-        let colorPhrase = '';
-        if(priorityValue == "high"){
-            colorPhrase = '<span style="height: 20px; width: 20px; background-color: red;"></span>';
-        }
-        else if(priorityValue == "medium"){
-            colorPhrase = '<span style="height: 20px; width: 20px; background-color: orange;"></span>';
-        }
-        else{
-            colorPhrase = '<span style="height: 20px; width: 20px; background-color: green;"></span>';
-        }
-        item.style.display = "flex";
-        item.style.alignItems = "center";
-        item.style.justifyContent = "space-between";
-        item.style.border = "1px solid black";
-        item.style.backgroundColor = "antiquewhite";
-        item.style.padding = "10px";
-        item.style.marginBottom = "10px";
-        item.innerHTML =
-            '<input type="checkbox" class="done-checkbox">' +
-            '<h2 class="item-property" style="margin-right: auto; margin-left: 10px; margin-top: 0; margin-bottom: 0">' + title + '</h2>' +
-            '<div style="display: flex; align-items: center; gap: 10px;">' +
-            colorPhrase +
-            '<p class="item-property">' + date + '</p>' +
-            '<i class="fa-solid fa-circle-info item-property"></i>' +
-            '<i class="fa-regular fa-pen-to-square item-property"></i>' +
-            '<i class="fa-solid fa-trash item-property"></i>' +
-            '</div>';
-    
-        bodySubdiv.appendChild(item);
-        if(checked === true){
-            item.querySelectorAll(".item-property").forEach(itemProperty => {
-                itemProperty.style.color = "grey";
-            });
+function displayItem(id,title,descriptionValue, date, priorityValue, checked){
+    let item = document.createElement("div");
+    let colorPhrase = '';
+    if(priorityValue == "high"){
+        colorPhrase = '<span style="height: 20px; width: 20px; background-color: red;"></span>';
+    }
+    else if(priorityValue == "medium"){
+        colorPhrase = '<span style="height: 20px; width: 20px; background-color: orange;"></span>';
+    }
+    else{
+        colorPhrase = '<span style="height: 20px; width: 20px; background-color: green;"></span>';
+    }
+    item.style.display = "flex";
+    item.style.alignItems = "center";
+    item.style.justifyContent = "space-between";
+    item.style.border = "1px solid black";
+    item.style.backgroundColor = "antiquewhite";
+    item.style.padding = "10px";
+    item.style.marginBottom = "10px";
+    item.innerHTML =
+        '<input type="checkbox" class="done-checkbox">' +
+        '<h2 class="item-property" style="margin-right: auto; margin-left: 10px; margin-top: 0; margin-bottom: 0">' + title + '</h2>' +
+        '<div style="display: flex; align-items: center; gap: 10px;">' +
+        colorPhrase +
+        '<p class="item-property">' + date + '</p>' +
+        '<i class="fa-solid fa-circle-info item-property"></i>' +
+        '<i class="fa-regular fa-pen-to-square item-property"></i>' +
+        '<i class="fa-solid fa-trash item-property"></i>' +
+        '</div>';
+
+    bodySubdiv.appendChild(item);
+    if(checked === true){
+        item.querySelectorAll(".item-property").forEach(itemProperty => {
+            itemProperty.style.color = "grey";
+        });
+        item.querySelector("h2").style.textDecoration = "line-through";
+    }
+
+    let checkbox = item.querySelector(".done-checkbox");
+    let itemProperties = item.querySelectorAll(".item-property");
+
+    checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+            itemProperties.forEach(itemProperty => itemProperty.style.color = "grey");
             item.querySelector("h2").style.textDecoration = "line-through";
+            checked = true;
+        } else {
+            itemProperties.forEach(itemProperty => itemProperty.style.color = "black");
+            item.querySelector("h2").style.textDecoration = "none";
         }
+    });
 
-        let checkbox = item.querySelector(".done-checkbox");
-        let itemProperties = item.querySelectorAll(".item-property");
+    let infoButton = item.querySelector(".fa-circle-info");
+    infoButton.addEventListener("click", () => {
+        displayInfo(title, descriptionValue, date, priorityValue);
+    });
 
-        checkbox.addEventListener("change", function () {
-            if (checkbox.checked) {
-                itemProperties.forEach(itemProperty => itemProperty.style.color = "grey");
-                item.querySelector("h2").style.textDecoration = "line-through";
-                checked = true;
-            } else {
-                itemProperties.forEach(itemProperty => itemProperty.style.color = "black");
-                item.querySelector("h2").style.textDecoration = "none";
+    let editButton = item.querySelector(".fa-pen-to-square");
+    editButton.addEventListener("click", () => {
+        let targetItem;
+        for (const target of itemsArray) {
+            if (target.id === id) {
+                targetItem = target;
+                break;
             }
+        }
+        editItemModal.style.display = "grid";
+        blanket.style.display = "block";
+
+        document.getElementById("edit-item-title").value = title || '';
+        document.getElementById("edit-item-date").value = date || '';
+
+        let editItemPriorities = document.getElementsByName("edit-item-priority");
+        editItemPriorities.forEach(priority => {
+            priority.checked = priority.value === priorityValue;
         });
 
-        let infoButton = item.querySelector(".fa-circle-info");
-        infoButton.addEventListener("click", () => {
-            displayInfo(title, descriptionValue, date, priorityValue);
+        let editItemDescriptions = document.getElementsByName("edit-item-description");
+        editItemDescriptions.forEach(description => {
+            description.checked = description.value === descriptionValue;
         });
+        console.log("before submit" + itemsArray);
+        editItemModalSubmit.addEventListener("click", function(){
+            let newTitle = document.getElementById("edit-item-title").value || title;
+            let newDate = document.getElementById("edit-item-date").value || date;
 
-        let editButton = item.querySelector(".fa-pen-to-square");
-        editButton.addEventListener("click", () => {
-            let targetItem;
-            for (const target of itemsArray) {
-                if (target.id === id) {
-                    targetItem = target;
+            let newPriorityValue = '';
+            for (const editItemPriority of editItemPriorities) {
+                if (editItemPriority.checked) {
+                    newPriorityValue = editItemPriority.value;
                     break;
                 }
             }
-            console.log(targetItem);
-            editItemModal.style.display = "grid";
-            blanket.style.display = "block";
+            if (!newPriorityValue) newPriorityValue = priorityValue;
 
-            document.getElementById("edit-item-title").value = title || '';
-            document.getElementById("edit-item-date").value = date || '';
-
-            let editItemPriorities = document.getElementsByName("edit-item-priority");
-            editItemPriorities.forEach(priority => {
-                priority.checked = priority.value === priorityValue;
-            });
-
-            let editItemDescriptions = document.getElementsByName("edit-item-description");
-            editItemDescriptions.forEach(description => {
-                description.checked = description.value === descriptionValue;
-            });
-            console.log("before submit" + itemsArray);
-            editItemModalSubmit.addEventListener("click", function(){
-                let newTitle = document.getElementById("edit-item-title").value || title;
-                let newDate = document.getElementById("edit-item-date").value || date;
-
-                let newPriorityValue = '';
-                for (const editItemPriority of editItemPriorities) {
-                    if (editItemPriority.checked) {
-                        newPriorityValue = editItemPriority.value;
-                        break;
-                    }
+            let newDescriptionValue = '';
+            for (const editItemDescription of editItemDescriptions) {
+                if (editItemDescription.checked) {
+                    newDescriptionValue = editItemDescription.value;
+                    break;
                 }
-                if (!newPriorityValue) newPriorityValue = priorityValue;
+            }
+            if (!newDescriptionValue) newDescriptionValue = descriptionValue;
 
-                let newDescriptionValue = '';
-                for (const editItemDescription of editItemDescriptions) {
-                    if (editItemDescription.checked) {
-                        newDescriptionValue = editItemDescription.value;
-                        break;
-                    }
-                }
-                if (!newDescriptionValue) newDescriptionValue = descriptionValue;
-
-                if(!newTitle && !newPriorityValue && newDate && !newDescriptionValue){
-                    alert("Fill in at least one info")
-                }
-                else{
-                    editItem(targetItem, newTitle, newDescriptionValue, newDate, newPriorityValue);
-                    displayAllItems();
-                    console.log("after submit" , itemsArray);
-                }
-                editItemModal.style.display = "none";
-                blanket.style.display = "none";
-            });
+            if(!newTitle && !newPriorityValue && newDate && !newDescriptionValue){
+                alert("Fill in at least one info")
+            }
+            else{
+                editItem(targetItem, newTitle, newDescriptionValue, newDate, newPriorityValue);
+                displayAllItems();
+            }
+            editItemModal.style.display = "none";
+            blanket.style.display = "none";
         });
-    }
-//}
+    });
+}
+
 
 function displayInfo(title, descriptionValue, date, priorityValue){
     let infoBox = document.createElement("div");
@@ -273,21 +265,7 @@ function displayAllItems(){
     bodySubdiv.innerHTML = "";
     addItemButton.style.display = "flex";
     itemsArray.forEach(item => {
-        //if(!item.displayed){
-            // const checkbox = item.element.querySelector(".done-checkbox");
-            // item.checked = checkbox.checked;
-
-            displayItem(item.id, item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed, item.checked);
-            //item.displayed = true;
-
-            // if(item.checked){
-            //     checkbox.checked = true; // Sync the DOM checkbox state
-            //     item.element.querySelectorAll(".item-property").forEach(itemProperty => {
-            //         itemProperty.style.color = "grey";
-            //     });
-            //     item.element.querySelector("h2").style.textDecoration = "line-through";
-            // }
-        //}
+        displayItem(item.id, item.title, item.descriptionValue, item.date, item.priorityValue, item.checked);
     });
 }
 
@@ -296,30 +274,6 @@ function editItem(targetItem,newTitle,newDescriptionValue, newDate, newPriorityV
     if (newDate) targetItem.date = newDate;
     if (newPriorityValue) targetItem.priorityValue = newPriorityValue;
     if (newDescriptionValue) targetItem.descriptionValue = newDescriptionValue;
-
-    // Update the DOM element
-    // const itemElement = targetItem.element;
-    // if (newTitle) {
-    //     const titleElement = itemElement.querySelector("h2");
-    //     titleElement.textContent = newTitle;
-    // }
-    // if (newDate) {
-    //     const dateElement = itemElement.querySelector(".item-property:nth-child(2)");
-    //     if (dateElement) {
-    //         dateElement.textContent = newDate;
-    //     }
-    //     console.log(newDate);
-    // }
-
-    // if (newPriorityValue) {
-    //     const color =
-    //     newPriorityValue === "high" ? "red" :
-    //     newPriorityValue === "medium" ? "orange" : "green";
-    //     const priorityElement = itemElement.querySelector("span");
-    //     if (priorityElement) {
-    //         priorityElement.style.backgroundColor = color;
-    //     }
-    // }
 }
 
 var sidebarCategories = document.getElementsByClassName("sidebar-category");
@@ -341,21 +295,7 @@ function displayCategory(element){
         bodySubdiv.innerHTML = "";
         addItemButton.style.display = "none";
         filteredItems.forEach(item => {
-            //if(!item.displayed){
-                // const checkbox = item.element.querySelector(".done-checkbox");
-                // item.checked = checkbox.checked;
-
-                displayItem(item.id, item.title, item.descriptionValue, item.date, item.priorityValue, item.displayed, item.checked);
-                //item.displayed = true;
-
-                // if(item.checked){
-                //     checkbox.checked = true; // Sync the DOM checkbox state
-                //     item.element.querySelectorAll(".item-property").forEach(itemProperty => {
-                //         itemProperty.style.color = "grey";
-                //     });
-                //     item.element.querySelector("h2").style.textDecoration = "line-through";
-                // }
-            //}
+            displayItem(item.id, item.title, item.descriptionValue, item.date, item.priorityValue, item.checked);         
         });
     } else {
         alert("You have no " + category + " items")
