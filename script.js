@@ -181,7 +181,7 @@ function displayItem(id,title,descriptionValue, date, priorityValue, checked){
             description.checked = description.value === descriptionValue;
         });
         let targetItem = itemsArray.find(item => item.id === id);
-        editItemModalSubmit.addEventListener("click", editItem(targetItem, title, descriptionValue, date, priorityValue));
+        editItemModalSubmit.onclick = () => editItem( targetItem, title, descriptionValue, date, priorityValue );
     });
 }
 
