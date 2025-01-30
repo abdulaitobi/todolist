@@ -66,9 +66,8 @@ addCategoryModalSubmit.addEventListener("click", function(){
 })
 
 addItemModalSubmit.addEventListener("click", function(){
-    blanket.style.display = "none"
     let itemObj = new Object();
-    itemObj.id++;
+    itemObj.id = itemsArray.length + 1;
     itemObj.title = document.getElementById("add-item-title").value;
 
     let descriptions = document.getElementsByName("add-item-description");
@@ -94,6 +93,7 @@ addItemModalSubmit.addEventListener("click", function(){
     if(!itemObj.title || !itemObj.descriptionValue || !itemObj.date || !itemObj.priorityValue){
         alert("Fill in all info")
     }else {
+        blanket.style.display = "none"
         itemsArray.push(itemObj);
         displayItem(itemObj.id, itemObj.title,itemObj.descriptionValue, itemObj.date, itemObj.priorityValue, itemObj.checked);
         document.getElementById("add-item-title").value = "";
@@ -130,8 +130,7 @@ function displayItem(id,title,descriptionValue, date, priorityValue, checked){
     item.innerHTML =
         '<input type="checkbox" class="done-checkbox">' +
         '<h2 class="item-property" style="margin-right: auto; margin-left: 10px; margin-top: 0; margin-bottom: 0">' + title + '</h2>' +
-        '<div style="display: flex; align-items: center; gap: 10px;">' +
-        colorPhrase +
+        '<div style="display: flex; align-items: center; gap: 10px;">' + colorPhrase +
         '<p class="item-property">' + date + '</p>' +
         '<i class="fa-solid fa-circle-info item-property"></i>' +
         '<i class="fa-regular fa-pen-to-square item-property"></i>' +
@@ -167,16 +166,8 @@ function displayItem(id,title,descriptionValue, date, priorityValue, checked){
 
     let editButton = item.querySelector(".fa-pen-to-square");
     editButton.addEventListener("click", () => {
-        let targetItem;
-        for (const target of itemsArray) {
-            if (target.id === id) {
-                targetItem = target;
-                break;
-            }
-        }
         editItemModal.style.display = "grid";
         blanket.style.display = "block";
-
         document.getElementById("edit-item-title").value = title || '';
         document.getElementById("edit-item-date").value = date || '';
 
@@ -189,42 +180,10 @@ function displayItem(id,title,descriptionValue, date, priorityValue, checked){
         editItemDescriptions.forEach(description => {
             description.checked = description.value === descriptionValue;
         });
-        console.log("before submit" + itemsArray);
-        editItemModalSubmit.addEventListener("click", function(){
-            let newTitle = document.getElementById("edit-item-title").value || title;
-            let newDate = document.getElementById("edit-item-date").value || date;
-
-            let newPriorityValue = '';
-            for (const editItemPriority of editItemPriorities) {
-                if (editItemPriority.checked) {
-                    newPriorityValue = editItemPriority.value;
-                    break;
-                }
-            }
-            if (!newPriorityValue) newPriorityValue = priorityValue;
-
-            let newDescriptionValue = '';
-            for (const editItemDescription of editItemDescriptions) {
-                if (editItemDescription.checked) {
-                    newDescriptionValue = editItemDescription.value;
-                    break;
-                }
-            }
-            if (!newDescriptionValue) newDescriptionValue = descriptionValue;
-
-            if(!newTitle && !newPriorityValue && newDate && !newDescriptionValue){
-                alert("Fill in at least one info")
-            }
-            else{
-                editItem(targetItem, newTitle, newDescriptionValue, newDate, newPriorityValue);
-                displayAllItems();
-            }
-            editItemModal.style.display = "none";
-            blanket.style.display = "none";
-        });
+        let targetItem = itemsArray.find(item => item.id === id);
+        editItemModalSubmit.addEventListener("click", editItem(targetItem, title, descriptionValue, date, priorityValue));
     });
 }
-
 
 function displayInfo(title, descriptionValue, date, priorityValue){
     let infoBox = document.createElement("div");
@@ -269,11 +228,48 @@ function displayAllItems(){
     });
 }
 
-function editItem(targetItem,newTitle,newDescriptionValue, newDate, newPriorityValue){
-    if (newTitle) targetItem.title = newTitle || "";
-    if (newDate) targetItem.date = newDate;
-    if (newPriorityValue) targetItem.priorityValue = newPriorityValue;
-    if (newDescriptionValue) targetItem.descriptionValue = newDescriptionValue;
+function editItem(targetItem,title,descriptionValue, date, priorityValue){
+    console.log("targetItem", targetItem);
+    let newTitle = document.getElementById("edit-item-title").value || title;
+    let newDate = document.getElementById("edit-item-date").value || date;
+
+    let editItemPriorities = document.getElementsByName("edit-item-priority");
+    let newPriorityValue = '';
+    for (const editItemPriority of editItemPriorities) {
+        if (editItemPriority.checked) {
+            newPriorityValue = editItemPriority.value;
+            break;
+        }
+    }
+    if (!newPriorityValue) newPriorityValue = priorityValue;
+
+    let editItemDescriptions = document.getElementsByName("edit-item-description");
+    let newDescriptionValue = '';
+    for (const editItemDescription of editItemDescriptions) {
+        if (editItemDescription.checked) {
+            newDescriptionValue = editItemDescription.value;
+            break;
+        }
+    }
+    if (!newDescriptionValue) newDescriptionValue = descriptionValue;
+
+    if(!newTitle && !newPriorityValue && !newDate && !newDescriptionValue){
+        alert("Fill in at least one info")
+    }
+    else{
+        if (!targetItem) {
+            console.error("Error: targetItem is undefined or null");
+            return;
+        }
+        if (newTitle) targetItem.title = newTitle;
+        if (newDate) targetItem.date = newDate;
+        if (newPriorityValue) targetItem.priorityValue = newPriorityValue;
+        if (newDescriptionValue) targetItem.descriptionValue = newDescriptionValue;
+        console.log(targetItem)
+        displayAllItems();
+    }
+    editItemModal.style.display = "none";
+    blanket.style.display = "none";
 }
 
 var sidebarCategories = document.getElementsByClassName("sidebar-category");
