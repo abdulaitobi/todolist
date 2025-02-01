@@ -183,6 +183,17 @@ function displayItem(id,title,descriptionValue, date, priorityValue, checked){
         let targetItem = itemsArray.find(item => item.id === id);
         editItemModalSubmit.onclick = () => editItem( targetItem, title, descriptionValue, date, priorityValue );
     });
+
+    let deleteButton = item.querySelector(".fa-trash");
+    deleteButton.onclick = () => deleteItem(id);
+}
+
+function deleteItem(id){
+    console.log("id", id);
+    let targetIndex = itemsArray.findIndex(item => item.id === id);
+    itemsArray.splice(targetIndex, 1);
+    console.log(itemsArray);
+    displayAllItems();
 }
 
 function displayInfo(title, descriptionValue, date, priorityValue){
