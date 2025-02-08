@@ -15,6 +15,7 @@ let bodySubdiv = document.getElementById("body-subdiv");
 var blanket = document.getElementById("blanket");
 let sidebarItems = document.getElementById("sidebar-items")
 let itemsArray = [];
+let nextId = 1;
 
 addItemButton.addEventListener("click", function(){
     addItemModal.style.display = "grid";
@@ -67,7 +68,7 @@ addCategoryModalSubmit.addEventListener("click", function(){
 
 addItemModalSubmit.addEventListener("click", function(){
     let itemObj = new Object();
-    itemObj.id = itemsArray.length + 1;
+    itemObj.id = nextId++;
     itemObj.title = document.getElementById("add-item-title").value;
 
     let descriptions = document.getElementsByName("add-item-description");
@@ -95,7 +96,7 @@ addItemModalSubmit.addEventListener("click", function(){
     }else {
         blanket.style.display = "none"
         itemsArray.push(itemObj);
-        displayItem(itemObj.id, itemObj.title,itemObj.descriptionValue, itemObj.date, itemObj.priorityValue, itemObj.checked);
+        displayItem(itemObj);
         document.getElementById("add-item-title").value = "";
         for (const description of descriptions) {
             description.checked = false;
@@ -108,18 +109,21 @@ addItemModalSubmit.addEventListener("click", function(){
     }
 })
 
-function displayItem(id,title,descriptionValue, date, priorityValue, checked){
+function displayItem(itemObj){
     let item = document.createElement("div");
+    item.dataset.itemId = itemObj.id;  // Store the ID in the DOM element
+    
     let colorPhrase = '';
-    if(priorityValue == "high"){
+    if(itemObj.priorityValue == "high"){
         colorPhrase = '<span style="height: 20px; width: 20px; background-color: red;"></span>';
     }
-    else if(priorityValue == "medium"){
+    else if(itemObj.priorityValue == "medium"){
         colorPhrase = '<span style="height: 20px; width: 20px; background-color: orange;"></span>';
     }
     else{
         colorPhrase = '<span style="height: 20px; width: 20px; background-color: green;"></span>';
     }
+    
     item.style.display = "flex";
     item.style.alignItems = "center";
     item.style.justifyContent = "space-between";
@@ -129,16 +133,17 @@ function displayItem(id,title,descriptionValue, date, priorityValue, checked){
     item.style.marginBottom = "10px";
     item.innerHTML =
         '<input type="checkbox" class="done-checkbox">' +
-        '<h2 class="item-property" style="margin-right: auto; margin-left: 10px; margin-top: 0; margin-bottom: 0">' + title + '</h2>' +
+        '<h2 class="item-property" style="margin-right: auto; margin-left: 10px; margin-top: 0; margin-bottom: 0">' + itemObj.title + '</h2>' +
         '<div style="display: flex; align-items: center; gap: 10px;">' + colorPhrase +
-        '<p class="item-property">' + date + '</p>' +
+        '<p class="item-property">' + itemObj.date + '</p>' +
         '<i class="fa-solid fa-circle-info item-property"></i>' +
         '<i class="fa-regular fa-pen-to-square item-property"></i>' +
         '<i class="fa-solid fa-trash item-property"></i>' +
         '</div>';
 
     bodySubdiv.appendChild(item);
-    if(checked === true){
+    
+    if(itemObj.checked === true){
         item.querySelectorAll(".item-property").forEach(itemProperty => {
             itemProperty.style.color = "grey";
         });
@@ -146,13 +151,14 @@ function displayItem(id,title,descriptionValue, date, priorityValue, checked){
     }
 
     let checkbox = item.querySelector(".done-checkbox");
+    checkbox.checked = itemObj.checked;
     let itemProperties = item.querySelectorAll(".item-property");
 
     checkbox.addEventListener("change", function () {
+        itemObj.checked = checkbox.checked;
         if (checkbox.checked) {
             itemProperties.forEach(itemProperty => itemProperty.style.color = "grey");
             item.querySelector("h2").style.textDecoration = "line-through";
-            checked = true;
         } else {
             itemProperties.forEach(itemProperty => itemProperty.style.color = "black");
             item.querySelector("h2").style.textDecoration = "none";
@@ -161,39 +167,41 @@ function displayItem(id,title,descriptionValue, date, priorityValue, checked){
 
     let infoButton = item.querySelector(".fa-circle-info");
     infoButton.addEventListener("click", () => {
-        displayInfo(title, descriptionValue, date, priorityValue);
+        displayInfo(itemObj.title, itemObj.descriptionValue, itemObj.date, itemObj.priorityValue);
     });
 
     let editButton = item.querySelector(".fa-pen-to-square");
     editButton.addEventListener("click", () => {
         editItemModal.style.display = "grid";
         blanket.style.display = "block";
-        document.getElementById("edit-item-title").value = title || '';
-        document.getElementById("edit-item-date").value = date || '';
+        document.getElementById("edit-item-title").value = itemObj.title || '';
+        document.getElementById("edit-item-date").value = itemObj.date || '';
 
         let editItemPriorities = document.getElementsByName("edit-item-priority");
         editItemPriorities.forEach(priority => {
-            priority.checked = priority.value === priorityValue;
+            priority.checked = priority.value === itemObj.priorityValue;
         });
 
         let editItemDescriptions = document.getElementsByName("edit-item-description");
         editItemDescriptions.forEach(description => {
-            description.checked = description.value === descriptionValue;
+            description.checked = description.value === itemObj.descriptionValue;
         });
-        let targetItem = itemsArray.find(item => item.id === id);
-        editItemModalSubmit.onclick = () => editItem( targetItem, title, descriptionValue, date, priorityValue );
+        
+        editItemModalSubmit.onclick = () => editItem(itemObj);
     });
 
     let deleteButton = item.querySelector(".fa-trash");
-    deleteButton.onclick = () => deleteItem(id);
+    deleteButton.addEventListener("click", () => {
+        deleteItem(itemObj.id);
+        item.remove();  // Remove the item from DOM immediately
+    });
 }
 
 function deleteItem(id){
-    console.log("id", id);
     let targetIndex = itemsArray.findIndex(item => item.id === id);
-    itemsArray.splice(targetIndex, 1);
-    console.log(itemsArray);
-    displayAllItems();
+    if (targetIndex !== -1) { 
+        itemsArray.splice(targetIndex, 1);
+    }
 }
 
 function displayInfo(title, descriptionValue, date, priorityValue){
@@ -235,7 +243,7 @@ function displayAllItems(){
     bodySubdiv.innerHTML = "";
     addItemButton.style.display = "flex";
     itemsArray.forEach(item => {
-        displayItem(item.id, item.title, item.descriptionValue, item.date, item.priorityValue, item.checked);
+        displayItem(item);
     });
 }
 
@@ -302,7 +310,7 @@ function displayCategory(element){
         bodySubdiv.innerHTML = "";
         addItemButton.style.display = "none";
         filteredItems.forEach(item => {
-            displayItem(item.id, item.title, item.descriptionValue, item.date, item.priorityValue, item.checked);         
+            displayItem(item);         
         });
     } else {
         alert("You have no " + category + " items")
