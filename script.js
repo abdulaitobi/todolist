@@ -68,6 +68,7 @@ addCategoryModalSubmit.addEventListener("click", function(){
 
     // Create category elements
     createCategoryElements(categoryName);
+    location.reload();
 
     // Clear and close modal
     addCategoryModal.style.display = "none";
@@ -154,15 +155,30 @@ function createCategoryElements(categoryName){
         category.appendChild(deleteBtn);
     }
 
-    // Create category radio option
-    let categoryLabel = document.createElement("label");
-    let categoryOption = document.createElement("input");
-    categoryOption.type = "radio";
-    categoryOption.name = "description";
-    categoryOption.value = categoryName.toLowerCase();
-    categoryLabel.appendChild(categoryOption);
-    categoryLabel.insertAdjacentText('beforeend', categoryName);
-    descriptionOptions.appendChild(categoryLabel);
+    // Check if radio option already exists before creating
+    // For add item modal
+    if (!document.querySelector(`input[name="add-item-description"][value="${categoryName.toLowerCase()}"]`)) {
+        let categoryLabel = document.createElement("label");
+        let categoryOption = document.createElement("input");
+        categoryOption.type = "radio";
+        categoryOption.name = "add-item-description";
+        categoryOption.value = categoryName.toLowerCase();
+        categoryLabel.appendChild(categoryOption);
+        categoryLabel.insertAdjacentText('beforeend', categoryName);
+        descriptionOptions.appendChild(categoryLabel);
+    }
+
+    // For edit modal
+    if (!document.querySelector(`input[name="edit-item-description"][value="${categoryName.toLowerCase()}"]`)) {
+        let editCategoryLabel = document.createElement("label");
+        let editCategoryOption = document.createElement("input");
+        editCategoryOption.type = "radio";
+        editCategoryOption.name = "edit-item-description";
+        editCategoryOption.value = categoryName.toLowerCase();
+        editCategoryLabel.appendChild(editCategoryOption);
+        editCategoryLabel.insertAdjacentText('beforeend', categoryName);
+        document.getElementById("edit-description-options").appendChild(editCategoryLabel);
+    }
 }
 
 function displayItem(itemObj){
@@ -404,5 +420,4 @@ function editItem(targetItem){
 window.addEventListener('load', function() {
     displayAllItems();
     loadCategories();
-    addCategoryDeleteButtons();
 });
