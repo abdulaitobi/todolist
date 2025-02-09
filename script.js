@@ -14,8 +14,10 @@ let body = document.getElementById("body");
 let bodySubdiv = document.getElementById("body-subdiv");
 var blanket = document.getElementById("blanket");
 let sidebarItems = document.getElementById("sidebar-items")
-let itemsArray = [];
-let nextId = 1;
+let itemsArray = JSON.parse(localStorage.getItem('items')) || []; // Array of items
+let nextId = parseInt(localStorage.getItem('nextId')) || 1; // Next ID to assign to a new item
+let categoriesArray = JSON.parse(localStorage.getItem('categories')) || []; // Array of categories
+const PROTECTED_CATEGORIES = ['gym', 'school', 'work']; // These categories cannot be deleted
 
 addItemButton.addEventListener("click", function(){
     addItemModal.style.display = "grid";
@@ -45,29 +47,35 @@ editItemModalCancel.addEventListener("click", function(){
 })
 
 addCategoryModalSubmit.addEventListener("click", function(){
-    blanket.style.display = "none"
+    blanket.style.display = "none";
     let categoryName = document.getElementById("category-name").value;
-    let category = document.createElement("span");
-    category.textContent = categoryName;
-    category.className = "sidebar-category"
-    sidebarItems.appendChild(category);
-    category.addEventListener("click", function () {
-        displayCategory(this);
-    })
+    
+    if (!categoryName) {
+        alert("Please enter a category name");
+        return;
+    }
+
+    // Check for duplicate categories (case insensitive)
+    if (categoriesArray.some(cat => cat.toLowerCase() === categoryName.toLowerCase()) || 
+        PROTECTED_CATEGORIES.includes(categoryName.toLowerCase())) {
+        alert("This category already exists");
+        return;
+    }
+
+    // Add to categories array and save
+    categoriesArray.push(categoryName);
+    saveCategories();
+
+    // Create category elements
+    createCategoryElements(categoryName);
+
+    // Clear and close modal
     addCategoryModal.style.display = "none";
     document.getElementById('category-name').value = "";
-    let categoryLabel = document.createElement("label");
-    let categoryOption = document.createElement("input");
-    categoryOption.type = "radio";
-    categoryOption.name = "description";
-    categoryOption.value = categoryName.toLowerCase();
-    categoryLabel.appendChild(categoryOption);
-    categoryLabel.insertAdjacentText('beforeend', categoryName);
-    descriptionOptions.appendChild(categoryLabel);
-})
+});
 
 addItemModalSubmit.addEventListener("click", function(){
-    let itemObj = new Object();
+    let itemObj = new Object(); 
     itemObj.id = nextId++;
     itemObj.title = document.getElementById("add-item-title").value;
 
@@ -96,6 +104,7 @@ addItemModalSubmit.addEventListener("click", function(){
     }else {
         blanket.style.display = "none"
         itemsArray.push(itemObj);
+        saveToLocalStorage();   
         displayItem(itemObj);
         document.getElementById("add-item-title").value = "";
         for (const description of descriptions) {
@@ -107,7 +116,54 @@ addItemModalSubmit.addEventListener("click", function(){
         }
         addItemModal.style.display = "none";
     }
-})
+});
+
+var sidebarCategories = document.getElementsByClassName("sidebar-category");
+for (const sidebarCategory of sidebarCategories) {
+    sidebarCategory.addEventListener("click", function () {
+        displayCategory(this);
+    })
+}
+
+var homeSidebar = document.getElementById("home-sidebar");
+homeSidebar.addEventListener("click", function(){
+    displayAllItems();
+});
+
+function createCategoryElements(categoryName){
+    // Create sidebar category
+    let category = document.createElement("span");
+    category.textContent = categoryName;
+    category.className = "sidebar-category";
+    sidebarItems.appendChild(category);
+    category.addEventListener("click", function () {
+        displayCategory(this);
+    });
+
+    // Create delete button for non-default categories
+    if (!PROTECTED_CATEGORIES.includes(categoryName.toLowerCase())) {
+        const deleteBtn = document.createElement('span');
+        deleteBtn.innerHTML = ' <i class="fa-solid fa-1x fa-trash"></i>';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.onclick = (e) => {
+            e.stopPropagation(); // Prevent category click event
+            if (confirm(`Delete category "${categoryName}"?`)) {
+                deleteCategory(categoryName);
+            }
+        };
+        category.appendChild(deleteBtn);
+    }
+
+    // Create category radio option
+    let categoryLabel = document.createElement("label");
+    let categoryOption = document.createElement("input");
+    categoryOption.type = "radio";
+    categoryOption.name = "description";
+    categoryOption.value = categoryName.toLowerCase();
+    categoryLabel.appendChild(categoryOption);
+    categoryLabel.insertAdjacentText('beforeend', categoryName);
+    descriptionOptions.appendChild(categoryLabel);
+}
 
 function displayItem(itemObj){
     let item = document.createElement("div");
@@ -163,6 +219,7 @@ function displayItem(itemObj){
             itemProperties.forEach(itemProperty => itemProperty.style.color = "black");
             item.querySelector("h2").style.textDecoration = "none";
         }
+        saveToLocalStorage();
     });
 
     let infoButton = item.querySelector(".fa-circle-info");
@@ -195,13 +252,6 @@ function displayItem(itemObj){
         deleteItem(itemObj.id);
         item.remove();  // Remove the item from DOM immediately
     });
-}
-
-function deleteItem(id){
-    let targetIndex = itemsArray.findIndex(item => item.id === id);
-    if (targetIndex !== -1) { 
-        itemsArray.splice(targetIndex, 1);
-    }
 }
 
 function displayInfo(title, descriptionValue, date, priorityValue){
@@ -247,10 +297,70 @@ function displayAllItems(){
     });
 }
 
-function editItem(targetItem,title,descriptionValue, date, priorityValue){
+function displayCategory(element){
+    let category = element.textContent.trim();
+    category = category.replace('<i class="fa-solid fa-1x fa-trash"></i>', '').trim();
+    let filteredItems = itemsArray.filter(item => item.descriptionValue.toLowerCase() === category.toLowerCase());
+    if (filteredItems.length > 0) {
+        bodySubdiv.innerHTML = "";
+        addItemButton.style.display = "none";
+        filteredItems.forEach(item => {
+            displayItem(item);         
+        });
+    } else {
+        alert("You have no " + category + " items");
+        if (!PROTECTED_CATEGORIES.includes(category.toLowerCase()) && 
+            confirm(`Delete empty category "${category}"?`)) {
+            deleteCategory(category);
+        }
+    }
+};
+
+function deleteItem(id){
+    let targetIndex = itemsArray.findIndex(item => item.id === id);
+    if (targetIndex !== -1) { 
+        itemsArray.splice(targetIndex, 1);
+        saveToLocalStorage();
+    }
+}
+
+function deleteCategory(categoryName) {
+    if (PROTECTED_CATEGORIES.includes(categoryName.toLowerCase())) {
+        alert("This category cannot be deleted");
+        return;
+    }
+    // Remove from arrays
+    categoriesArray = categoriesArray.filter(cat => cat !== categoryName);
+    itemsArray = itemsArray.filter(item => item.descriptionValue.toLowerCase() !== categoryName.toLowerCase());
+    
+    // Save changes
+    saveCategories();
+    saveToLocalStorage();
+    
+    // Refresh display
+    location.reload(); 
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem('items', JSON.stringify(itemsArray));
+    localStorage.setItem('nextId', nextId.toString());
+    saveCategories();
+}
+
+function saveCategories() {
+    localStorage.setItem('categories', JSON.stringify(categoriesArray));
+}
+
+function loadCategories() {
+    categoriesArray.forEach(categoryName => {
+        createCategoryElements(categoryName);
+    });
+}
+
+function editItem(targetItem){
     console.log("targetItem", targetItem);
-    let newTitle = document.getElementById("edit-item-title").value || title;
-    let newDate = document.getElementById("edit-item-date").value || date;
+    let newTitle = document.getElementById("edit-item-title").value || targetItem.title;
+    let newDate = document.getElementById("edit-item-date").value || targetItem.date;
 
     let editItemPriorities = document.getElementsByName("edit-item-priority");
     let newPriorityValue = '';
@@ -260,7 +370,7 @@ function editItem(targetItem,title,descriptionValue, date, priorityValue){
             break;
         }
     }
-    if (!newPriorityValue) newPriorityValue = priorityValue;
+    if (!newPriorityValue) newPriorityValue = targetItem.priorityValue;
 
     let editItemDescriptions = document.getElementsByName("edit-item-description");
     let newDescriptionValue = '';
@@ -270,7 +380,7 @@ function editItem(targetItem,title,descriptionValue, date, priorityValue){
             break;
         }
     }
-    if (!newDescriptionValue) newDescriptionValue = descriptionValue;
+    if (!newDescriptionValue) newDescriptionValue = targetItem.descriptionValue;
 
     if(!newTitle && !newPriorityValue && !newDate && !newDescriptionValue){
         alert("Fill in at least one info")
@@ -284,35 +394,15 @@ function editItem(targetItem,title,descriptionValue, date, priorityValue){
         if (newDate) targetItem.date = newDate;
         if (newPriorityValue) targetItem.priorityValue = newPriorityValue;
         if (newDescriptionValue) targetItem.descriptionValue = newDescriptionValue;
-        console.log(targetItem)
+        saveToLocalStorage();
         displayAllItems();
     }
     editItemModal.style.display = "none";
     blanket.style.display = "none";
 }
 
-var sidebarCategories = document.getElementsByClassName("sidebar-category");
-for (const sidebarCategory of sidebarCategories) {
-    sidebarCategory.addEventListener("click", function () {
-        displayCategory(this);
-    })
-}
-
-var homeSidebar = document.getElementById("home-sidebar");
-homeSidebar.addEventListener("click", function(){
+window.addEventListener('load', function() {
     displayAllItems();
-})
-
-function displayCategory(element){
-    let category = element.textContent.trim();
-    let filteredItems = itemsArray.filter(item => item.descriptionValue.toLowerCase() === category.toLowerCase());
-    if (filteredItems.length > 0) {
-        bodySubdiv.innerHTML = "";
-        addItemButton.style.display = "none";
-        filteredItems.forEach(item => {
-            displayItem(item);         
-        });
-    } else {
-        alert("You have no " + category + " items")
-    }
-};
+    loadCategories();
+    addCategoryDeleteButtons();
+});
